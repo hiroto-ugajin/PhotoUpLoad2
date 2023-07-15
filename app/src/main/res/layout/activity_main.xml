@@ -17,10 +17,12 @@
             android:src="@drawable/background2" />
 
         <GridLayout
+            android:id="@+id/gridLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:rowCount="3"
-            android:columnCount="4">
+            android:layout_above="@+id/linearLayout"
+            android:rowCount="4"
+            android:columnCount="3">
 
             <ImageView
                 android:id="@+id/imageView0"
@@ -111,15 +113,39 @@
 
         </GridLayout>
 
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="30dp"
+
+
+
+            android:orientation="horizontal">
+
         <Button
             android:id="@+id/button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="30dp"
+            android:layout_weight="1"
             android:text="Button"
+
             android:textStyle="bold"/>
+
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Button2"
+
+                android:textStyle="bold"/>
+
+
+
+        </LinearLayout>
 
 
     </RelativeLayout>
