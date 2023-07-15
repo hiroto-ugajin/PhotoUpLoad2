@@ -29,24 +29,7 @@ class MainActivity : AppCompatActivity() {
         return list
     }
 
-
-    fun <T> List<T>.shuffleUnique(): List<T> {
-        val list = toMutableList()
-        val random = Random()
-        for (i in list.size - 1 downTo 1) {
-            val j = random.nextInt(i + 1)
-            list.swap(i, j)
-        }
-        return list
-    }
-
-    fun <T> MutableList<T>.swap(i: Int, j: Int) {
-        val temp = this[i]
-        this[i] = this[j]
-        this[j] = temp
-    }
-
-
+    var opennedCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,19 +52,6 @@ class MainActivity : AppCompatActivity() {
         val imageView10 = binding.imageView10
         val imageView11 = binding.imageView11
 
-//        var isImageVisible = true
-//
-//        imageView0.setOnClickListener {
-//            if (isImageVisible) {
-//                // 画像を非表示にする
-//                imageView0.alpha = 0.4f // 透明にする
-//            } else {
-//                // 画像を表示する
-//                imageView0.alpha = 1.0f // 不透明にする
-//            }
-//            isImageVisible = !isImageVisible
-//        }
-
         val imageViewList = listOf(
             imageView0, imageView1, imageView2, imageView3, imageView4, imageView5,
             imageView6, imageView7, imageView8, imageView9, imageView10, imageView11
@@ -90,23 +60,22 @@ class MainActivity : AppCompatActivity() {
         val isImageVisible = mutableMapOf<ImageView, Boolean>()
 
         imageViewList.forEach { imageView ->
-            isImageVisible[imageView] = true
+            isImageVisible[imageView] = false
 
             imageView.setOnClickListener {
-                val isVisible = isImageVisible[imageView] ?: true
+
+                val isVisible = isImageVisible[imageView] ?: false
 
                 if (isVisible) {
                     // 画像を非表示にする
-                    imageView.alpha = 0.4f // 透明にする
+                    imageView.alpha = 0.0f // 透明にする
                 } else {
                     // 画像を表示する
                     imageView.alpha = 1.0f // 不透明にする
                 }
-
                 isImageVisible[imageView] = !isVisible
             }
         }
-
 
         button2.setOnClickListener {
             val imageViewList = listOf(
@@ -119,8 +88,9 @@ class MainActivity : AppCompatActivity() {
 
             for (imageView in shuffledImageViewList) {
                 parentView.addView(imageView) // シャッフルされた順序でImageViewを追加する
-            }
+                imageView.alpha = 0.0f // 透明にする
 
+            }
         }
 
         button.setOnClickListener {
@@ -152,32 +122,13 @@ class MainActivity : AppCompatActivity() {
 
             val selectedImageUri: Uri? = data.data
 
-//            if (selectedImageUri != null) {
-//                // シャッフルした画像リストを作成
-//                val shuffledImageList = mutableListOf(selectedImageUri, selectedImageUri).shuffleUnique()
-//
-//                // ImageViewのリストを作成
-//                val imageViewList = listOf(imageView0, imageView1, imageView2, imageView3, imageView4, imageView5,
-//                    imageView6, imageView7, imageView8, imageView9, imageView10, imageView11)
-//
-//                // ImageViewに画像を貼り付ける
-//                for (i in 0 until imageViewList.size step 2) {
-//                    val imageView1 = imageViewList[i]
-//                    val imageView2 = imageViewList[i + 1]
-//                    Picasso.get().load(shuffledImageList[i]).into(imageView1)
-//                    Picasso.get().load(shuffledImageList[i + 1]).into(imageView2)
-//                }
-//            }
-
-
             if (selectedImageUri != null) {
                 // 画像を順番にImageViewに貼り付ける
                 val imageViewList = listOf(
                     imageView0, imageView1, imageView2, imageView3, imageView4, imageView5,
                     imageView6, imageView7, imageView8, imageView9, imageView10, imageView11
                 )
-                val imageViewList2 = imageViewList.shuffleUnique()
-                val shuffledImageViewList = imageViewList.shuffle()
+
                 val index = imageViewList.indexOfFirst { it.drawable == null }
                 if (index >= 0 && index < imageViewList.size) {
                     Picasso.get().load(selectedImageUri).into(imageViewList[index])
@@ -185,39 +136,9 @@ class MainActivity : AppCompatActivity() {
                 }
                 else {
                     Toast.makeText(this, "すべてのImageViewが埋まっています", Toast.LENGTH_SHORT).show()
-//                    imageViewList.shuffle()
-//                    val parentView = findViewById<ViewGroup>(R.id.gridLayout) // 親ViewのIDを指定して取得する
-//                    parentView.removeAllViews() // 現在の配置をクリアする
-//
-//                    for (imageView in imageViewList) {
-//                        parentView.addView(imageView) // シャッフルされた順序でImageViewを追加する
-//                    }
 
                 }
             }
-
-
-
-
-
-
-
-
-//            if (selectedImageUri != null) {
-//                // 画像を順番にImageViewに貼り付ける
-//                val imageViewList = listOf(imageView0, imageView1, imageView2, imageView3, imageView4, imageView5,
-//                    imageView6, imageView7, imageView8, imageView9, imageView10, imageView11)
-////                val imageViewList2 = imageViewList.shuffleUnique()
-//                val index = imageViewList.indexOfFirst { it.drawable == null }
-//                if (index >= 0 && index < imageViewList.size) {
-//                    Picasso.get().load(selectedImageUri).into(imageViewList[index])
-////                    Picasso.get().load(selectedImageUri).into(imageViewList[index + 1])
-//                }
-//        else {
-//                    Toast.makeText(this, "すべてのImageViewが埋まっています", Toast.LENGTH_SHORT).show()
-////                    imageViewList.shuffle()
-//                }
-//            }
         }
     }
 
