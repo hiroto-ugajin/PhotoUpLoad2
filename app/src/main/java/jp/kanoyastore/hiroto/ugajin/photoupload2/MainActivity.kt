@@ -2,6 +2,7 @@ package jp.kanoyastore.hiroto.ugajin.photoupload2
 
 import android.app.Activity
 import android.content.Intent
+import android.media.MediaPlayer
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -16,6 +17,7 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding // 追加
+    private lateinit var mediaPlayer: MediaPlayer
 
     fun <T> List<T>.shuffle(): List<T> {
         val list = toMutableList()
@@ -36,6 +38,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater) // 追加
         val view = binding.root // 追加
         setContentView(view) // 変更
+
+        val mediaPlayerNice = MediaPlayer.create(this, R.raw.nicesound)
 
         val button = binding.button
         val button2 = binding.button2
@@ -74,6 +78,29 @@ class MainActivity : AppCompatActivity() {
                     imageView.alpha = 1.0f // 不透明にする
                 }
                 isImageVisible[imageView] = !isVisible
+
+                val correctPairs = listOf(
+                    listOf(imageView0, imageView1),
+                    listOf(imageView2, imageView3),
+                    listOf(imageView4, imageView5),
+                    listOf(imageView6, imageView7),
+                    listOf(imageView8, imageView9),
+                    listOf(imageView10, imageView11),
+                )
+
+                val selectedImageViews = imageViewList.filter { isImageVisible[it] == true }
+                if (selectedImageViews.size == 2) {
+                    val isCorrectPair = correctPairs.any { it.containsAll(selectedImageViews) }
+                    if (isCorrectPair) {
+                        // 正解の処理を行う
+                        mediaPlayerNice.start()
+                        Toast.makeText(this, "正解！", Toast.LENGTH_SHORT).show()
+                    } else {
+                        // 不正解の処理を行う
+                        Toast.makeText(this, "不正解！", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
             }
         }
 
@@ -119,6 +146,8 @@ class MainActivity : AppCompatActivity() {
             val imageView9 = binding.imageView9
             val imageView10 = binding.imageView10
             val imageView11 = binding.imageView11
+
+            val mediaPlayerNice = MediaPlayer.create(this, R.raw.nicesound)
 
             val selectedImageUri: Uri? = data.data
 
