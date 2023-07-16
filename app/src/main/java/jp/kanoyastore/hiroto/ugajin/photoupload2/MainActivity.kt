@@ -6,9 +6,11 @@ import android.media.MediaPlayer
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.squareup.picasso.Picasso
 import jp.kanoyastore.hiroto.ugajin.photoupload2.databinding.ActivityMainBinding
 import java.util.*
@@ -65,44 +67,65 @@ class MainActivity : AppCompatActivity() {
 
         imageViewList.forEach { imageView ->
             isImageVisible[imageView] = false
+            imageView.isClickable = true
 
             imageView.setOnClickListener {
+                if (imageView.isClickable) {
 
-                val isVisible = isImageVisible[imageView] ?: false
+                    val isVisible = isImageVisible[imageView] ?: false
 
-                if (isVisible) {
-                    // 画像を非表示にする
-                    imageView.alpha = 0.0f // 透明にする
-                } else {
-                    // 画像を表示する
-                    imageView.alpha = 1.0f // 不透明にする
-                }
-                isImageVisible[imageView] = !isVisible
-
-                val correctPairs = listOf(
-                    listOf(imageView0, imageView1),
-                    listOf(imageView2, imageView3),
-                    listOf(imageView4, imageView5),
-                    listOf(imageView6, imageView7),
-                    listOf(imageView8, imageView9),
-                    listOf(imageView10, imageView11),
-                )
-
-                val selectedImageViews = imageViewList.filter { isImageVisible[it] == true }
-                if (selectedImageViews.size == 2) {
-                    val isCorrectPair = correctPairs.any { it.containsAll(selectedImageViews) }
-                    if (isCorrectPair) {
-                        // 正解の処理を行う
-                        mediaPlayerNice.start()
-                        Toast.makeText(this, "正解！", Toast.LENGTH_SHORT).show()
+                    if (isVisible) {
+                        // 画像を非表示にする
+                        imageView.alpha = 0.0f // 透明にする
                     } else {
-                        // 不正解の処理を行う
-                        Toast.makeText(this, "不正解！", Toast.LENGTH_SHORT).show()
+                        // 画像を表示する
+                        imageView.alpha = 1.0f // 不透明にする
+                    }
+                    isImageVisible[imageView] = !isVisible
+
+                    val correctPairs = listOf(
+                        listOf(imageView0, imageView1),
+                        listOf(imageView2, imageView3),
+                        listOf(imageView4, imageView5),
+                        listOf(imageView6, imageView7),
+                        listOf(imageView8, imageView9),
+                        listOf(imageView10, imageView11),
+                    )
+
+                    val selectedImageViews = imageViewList.filter { isImageVisible[it] == true }
+                    if (selectedImageViews.size == 2) {
+                        val isCorrectPair = correctPairs.any { it.containsAll(selectedImageViews) }
+                        if (isCorrectPair) {
+                            // 正解の処理を行う
+                            mediaPlayerNice.start()
+
+                            selectedImageViews[0].isClickable = false
+                            selectedImageViews[1].isClickable = false
+                            selectedImageViews[0].alpha = 0.6f
+                            selectedImageViews[1].alpha = 0.6f
+
+                            isImageVisible[selectedImageViews[0]] = false
+                            isImageVisible[selectedImageViews[1]] = false
+
+                            Toast.makeText(this, "正解！", Toast.LENGTH_SHORT).show()
+                        } else {
+                            // 不正解の処理を行う
+                            // 0.5秒後にクリックリスナーを有効にし、非表示にする
+                            Handler().postDelayed({
+                                selectedImageViews.forEach { imageView ->
+                                    imageView.alpha = 0.0f // 透明にする
+                                }
+                                isImageVisible[selectedImageViews[0]] = false
+                                isImageVisible[selectedImageViews[1]] = false
+
+
+                            }, 500)
+                        }
                     }
                 }
-
             }
         }
+
 
         button2.setOnClickListener {
             val imageViewList = listOf(
@@ -116,6 +139,7 @@ class MainActivity : AppCompatActivity() {
             for (imageView in shuffledImageViewList) {
                 parentView.addView(imageView) // シャッフルされた順序でImageViewを追加する
                 imageView.alpha = 0.0f // 透明にする
+                imageView.isClickable = true
 
             }
         }
