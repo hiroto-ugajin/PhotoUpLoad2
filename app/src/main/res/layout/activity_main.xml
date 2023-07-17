@@ -6,20 +6,37 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+
+
     <RelativeLayout
+        android:id="@+id/relativeLayout"
+
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/buttonPermission"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="パーミッション"
+            tools:ignore="MissingConstraints" />
+
+
 
         <ImageView
             android:id="@+id/backgroundImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/background2" />
+            android:layout_below="@id/buttonPermission"
+            android:layout_above="@+id/linearLayout"
+            android:src="@drawable/background5" />
 
         <GridLayout
             android:id="@+id/gridLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_below="@id/buttonPermission"
+
             android:layout_above="@+id/linearLayout"
             android:rowCount="4"
             android:columnCount="3">
@@ -115,32 +132,45 @@
 
         <LinearLayout
             android:id="@+id/linearLayout"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="30dp"
-
-
-
+            android:layout_marginBottom="10dp"
             android:orientation="horizontal">
 
         <Button
             android:id="@+id/button"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Button"
+            android:gravity="center"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            android:text="画像設定"
 
             android:textStyle="bold"/>
 
             <Button
-                android:id="@+id/button2"
-                android:layout_width="wrap_content"
+                android:id="@+id/button1"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button2"
+                android:gravity="center"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                android:text="画像破棄"
 
+                android:textStyle="bold"/>
+
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                android:text="スタート"
                 android:textStyle="bold"/>
 
 

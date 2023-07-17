@@ -1,15 +1,20 @@
 package jp.kanoyastore.hiroto.ugajin.photoupload2
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.net.Uri
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import com.squareup.picasso.Picasso
 import jp.kanoyastore.hiroto.ugajin.photoupload2.databinding.ActivityMainBinding
@@ -20,6 +25,21 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding // 追加
     private lateinit var mediaPlayer: MediaPlayer
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                Log.d("ANDROID", "許可された")
+            } else {
+                Log.d("ANDROID", "許可されなかった")
+                Toast.makeText(this, "パーミッションが拒否されました", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+    // APIレベルによって許可が必要なパーミッションを切り替える
+    private val readImagesPermission =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) Manifest.permission.READ_MEDIA_IMAGES
+        else Manifest.permission.READ_EXTERNAL_STORAGE
 
     fun <T> List<T>.shuffle(): List<T> {
         val list = toMutableList()
@@ -41,9 +61,21 @@ class MainActivity : AppCompatActivity() {
         val view = binding.root // 追加
         setContentView(view) // 変更
 
+        binding.buttonPermission.setOnClickListener {
+            // パーミッションの許可状態を確認する
+            if (checkSelfPermission(readImagesPermission) == PackageManager.PERMISSION_GRANTED) {
+                // 許可されている
+
+            } else {
+                // 許可されていないので許可ダイアログを表示する
+                requestPermissionLauncher.launch(readImagesPermission)
+            }
+        }
+
         val mediaPlayerNice = MediaPlayer.create(this, R.raw.nicesound)
 
         val button = binding.button
+        val button1 = binding.button1
         val button2 = binding.button2
         val imageView0 = binding.imageView0
         val imageView1 = binding.imageView1
@@ -97,17 +129,21 @@ class MainActivity : AppCompatActivity() {
                         val isCorrectPair = correctPairs.any { it.containsAll(selectedImageViews) }
                         if (isCorrectPair) {
                             // 正解の処理を行う
+
                             mediaPlayerNice.start()
 
                             selectedImageViews[0].isClickable = false
                             selectedImageViews[1].isClickable = false
-                            selectedImageViews[0].alpha = 0.6f
-                            selectedImageViews[1].alpha = 0.6f
+                            selectedImageViews[0].alpha = 0.3f
+                            selectedImageViews[1].alpha = 0.3f
 
                             isImageVisible[selectedImageViews[0]] = false
                             isImageVisible[selectedImageViews[1]] = false
 
                             Toast.makeText(this, "正解！", Toast.LENGTH_SHORT).show()
+
+
+
                         } else {
                             // 不正解の処理を行う
                             // 0.5秒後にクリックリスナーを有効にし、非表示にする
@@ -152,6 +188,12 @@ class MainActivity : AppCompatActivity() {
             }
             startActivityForResult(intent, READ_REQUEST_CODE)
         }
+
+        button1.setOnClickListener {  for (imageView in imageViewList) {
+            imageView.setImageDrawable(null)
+            imageView.alpha = 1.0f // 透明にする
+            imageView.isClickable = false
+        } }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
