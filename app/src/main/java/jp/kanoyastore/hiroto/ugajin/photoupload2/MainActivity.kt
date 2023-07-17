@@ -1,7 +1,6 @@
 package jp.kanoyastore.hiroto.ugajin.photoupload2
 
 import android.Manifest
-import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.MediaPlayer
@@ -15,7 +14,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import com.squareup.picasso.Picasso
 import jp.kanoyastore.hiroto.ugajin.photoupload2.databinding.ActivityMainBinding
 import java.util.*
@@ -53,7 +51,6 @@ class MainActivity : AppCompatActivity() {
         return list
     }
 
-    var opennedCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -129,20 +126,26 @@ class MainActivity : AppCompatActivity() {
                         val isCorrectPair = correctPairs.any { it.containsAll(selectedImageViews) }
                         if (isCorrectPair) {
                             // 正解の処理を行う
-
                             mediaPlayerNice.start()
 
                             selectedImageViews[0].isClickable = false
                             selectedImageViews[1].isClickable = false
-                            selectedImageViews[0].alpha = 0.3f
-                            selectedImageViews[1].alpha = 0.3f
 
                             isImageVisible[selectedImageViews[0]] = false
                             isImageVisible[selectedImageViews[1]] = false
 
                             Toast.makeText(this, "正解！", Toast.LENGTH_SHORT).show()
 
+                            Handler().postDelayed({
+                                selectedImageViews[0].alpha = 0.3f
+                                selectedImageViews[1].alpha = 0.3f
+                            }, 500)
 
+                            // 0.8秒後に音声停止
+                            Handler().postDelayed({
+                                mediaPlayerNice.pause()
+                                mediaPlayerNice.seekTo(0) // 再生位置をリセット
+                            }, 800)
 
                         } else {
                             // 不正解の処理を行う
@@ -154,14 +157,12 @@ class MainActivity : AppCompatActivity() {
                                 isImageVisible[selectedImageViews[0]] = false
                                 isImageVisible[selectedImageViews[1]] = false
 
-
                             }, 500)
                         }
                     }
                 }
             }
         }
-
 
         button2.setOnClickListener {
             val imageViewList = listOf(
@@ -176,12 +177,10 @@ class MainActivity : AppCompatActivity() {
                 parentView.addView(imageView) // シャッフルされた順序でImageViewを追加する
                 imageView.alpha = 0.0f // 透明にする
                 imageView.isClickable = true
-
             }
         }
 
         button.setOnClickListener {
-
             val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
                 addCategory(Intent.CATEGORY_OPENABLE)
                 type = "image/*"
@@ -231,7 +230,6 @@ class MainActivity : AppCompatActivity() {
                 }
                 else {
                     Toast.makeText(this, "すべてのImageViewが埋まっています", Toast.LENGTH_SHORT).show()
-
                 }
             }
         }
